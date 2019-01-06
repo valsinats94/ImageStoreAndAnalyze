@@ -29,6 +29,13 @@ namespace ImageStoreAndAnalyze.Controllers
             return View();
         }
 
+        public IActionResult Images()
+        {
+            ViewData["Message"] = "There it is your collection of images.";
+
+            return View();
+        }
+
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

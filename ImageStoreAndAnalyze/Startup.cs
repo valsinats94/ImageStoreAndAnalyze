@@ -32,10 +32,12 @@ namespace ImageStoreAndAnalyze
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();            
+                .AddDefaultTokenProviders();
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
+            //services.Configure<AuthMessageSenderOptions>(Configuration);
+
             services.AddTransient<SeedDefaultData>();
 
             services.AddMvc();

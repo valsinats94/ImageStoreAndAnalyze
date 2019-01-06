@@ -1,8 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 
 namespace ImageStoreAndAnalyze.Models
 {
@@ -10,5 +7,7 @@ namespace ImageStoreAndAnalyze.Models
     public class ApplicationUser : IdentityUser, IUser
     {
         public ICollection<FamilyUsers> FamilyUsers { get; set; }
+
+        public bool IsFamilyAdmin { get; set; }
     }
 }

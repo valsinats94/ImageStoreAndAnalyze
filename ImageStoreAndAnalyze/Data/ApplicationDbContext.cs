@@ -34,6 +34,8 @@ namespace ImageStoreAndAnalyze.Data
                 .WithMany(fu => fu.FamilyUsers)
                 .HasForeignKey(u => u.ApplicationUserId);
 
+            builder.Entity<Family>()
+                .HasOne(a => a.FamilyAdministrator);
         }
 
         private void CreateUserRoles()

@@ -19,5 +19,10 @@ namespace ImageStoreAndAnalyze.Data
         {
             base.OnModelCreating(builder);
         }
+
+        private void CreateUserRoles()
+        {
+            
+        }
     }
 }

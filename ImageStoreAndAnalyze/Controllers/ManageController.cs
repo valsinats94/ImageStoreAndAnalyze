@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using ImageStoreAndAnalyze.Models;
 using ImageStoreAndAnalyze.Models.ManageViewModels;
 using ImageStoreAndAnalyze.Services;
+using System.Security.Claims;
 
 namespace ImageStoreAndAnalyze.Controllers
 {
@@ -55,10 +56,13 @@ namespace ImageStoreAndAnalyze.Controllers
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
+            IList<Claim> userClaims = await _userManager.GetClaimsAsync(user);
             var model = new IndexViewModel
             {
                 Username = user.UserName,
                 Email = user.Email,
+                FirstName = (userClaims == null || userClaims.Count <= 0 ? "" : userClaims.FirstOrDefault(uc => uc.Type == ClaimTypes.GivenName)?.Value),
+                LastName = (userClaims == null || userClaims.Count <= 0 ? "" : userClaims.FirstOrDefault(uc => uc.Type == ClaimTypes.Surname)?.Value),
                 PhoneNumber = user.PhoneNumber,
                 IsEmailConfirmed = user.EmailConfirmed,
                 StatusMessage = StatusMessage
@@ -101,6 +105,31 @@ namespace ImageStoreAndAnalyze.Controllers
                     throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
                 }
             }
+
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            var claimsToAdd = new List<Claim>();
+
+            var firstName = userClaims?.FirstOrDefault(uc => uc.Type == ClaimTypes.GivenName)?.Value;
+            if (model.FirstName != firstName)
+            {
+                var claim = userClaims?.FirstOrDefault(uc => uc.Type == ClaimTypes.GivenName);
+                if  (claim != null)
+                    await _userManager.RemoveClaimAsync(user, claim);
+
+                claimsToAdd.Add(new Claim(ClaimTypes.GivenName, model.FirstName));
+            }
+
+            var lastName = userClaims?.FirstOrDefault(uc => uc.Type == ClaimTypes.Surname)?.Value;
+            if (model.LastName != lastName)
+            {
+                var claim = userClaims?.FirstOrDefault(uc => uc.Type == ClaimTypes.Surname);
+                if (claim != null)
+                    await _userManager.RemoveClaimAsync(user, claim);
+
+                claimsToAdd.Add(new Claim(ClaimTypes.Surname, model.LastName));
+            }
+
+            var addClaimsResult = await _userManager.AddClaimsAsync(user, claimsToAdd);
 
             StatusMessage = "Your profile has been updated";
             return RedirectToAction(nameof(Index));

@@ -24,7 +24,7 @@ namespace ImageStoreAndAnalyze.Controllers
 
         public IActionResult Contact()
         {
-            ViewData["Message"] = "Your contact page.";
+            ViewData["Message"] = "If you have any questions, do not hesitate to contact us.";
 
             return View();
         }

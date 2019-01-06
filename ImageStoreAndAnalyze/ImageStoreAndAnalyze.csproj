@@ -22,7 +22,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\FamilyAccountViewModels\" />
+    <Content Update="Views\Manage\CreateFamily.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Manage\FamiliesManagement.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
   </ItemGroup>
 
 </Project>

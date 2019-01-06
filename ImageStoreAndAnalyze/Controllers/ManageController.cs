@@ -14,6 +14,7 @@ using ImageStoreAndAnalyze.Models;
 using ImageStoreAndAnalyze.Models.ManageViewModels;
 using ImageStoreAndAnalyze.Services;
 using System.Security.Claims;
+using ImageStoreAndAnalyze.Models.FamilyAccountViewModels;
 
 namespace ImageStoreAndAnalyze.Controllers
 {
@@ -518,6 +519,91 @@ namespace ImageStoreAndAnalyze.Controllers
             var model = new ShowRecoveryCodesViewModel { RecoveryCodes = recoveryCodes.ToArray() };
 
             return View(nameof(ShowRecoveryCodes), model);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> FamiliesManagement()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var model = new FamiliesManagementViewModel { StatusMessage = StatusMessage };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> FamiliesManagement(FamiliesManagementViewModel model)
+        {
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(model);
+            //}
+
+            //var user = await _userManager.GetUserAsync(User);
+            //if (user == null)
+            //{
+            //    throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            //}
+
+            //var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+            //if (!changePasswordResult.Succeeded)
+            //{
+            //    AddErrors(changePasswordResult);
+            //    return View(model);
+            //}
+
+            //await _signInManager.SignInAsync(user, isPersistent: false);
+            _logger.LogInformation("User changed family details succesfully.");
+            StatusMessage = "Your changes were made successfully.";
+
+            return RedirectToAction(nameof(FamiliesManagement));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateFamily()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var model = new CreateFamilyViewModel { StatusMessage = StatusMessage };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateFamily(CreateFamilyViewModel model)
+        {
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(model);
+            //}
+
+            //var user = await _userManager.GetUserAsync(User);
+            //if (user == null)
+            //{
+            //    throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            //}
+
+            //var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+            //if (!changePasswordResult.Succeeded)
+            //{
+            //    AddErrors(changePasswordResult);
+            //    return View(model);
+            //}
+
+            //await _signInManager.SignInAsync(user, isPersistent: false);
+            _logger.LogInformation("User created family succesfully.");
+            StatusMessage = "You created family successfully.";
+
+            return RedirectToAction(nameof(FamiliesManagement));
         }
 
         #region Helpers

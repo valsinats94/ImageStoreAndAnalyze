@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Identity;
 namespace ImageStoreAndAnalyze.Models
 {
     // Add profile data for application users by adding properties to the ApplicationUser class
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser, IUser
     {
+        public ICollection<FamilyUsers> FamilyUsers { get; set; }
     }
 }

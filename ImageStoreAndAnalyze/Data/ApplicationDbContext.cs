@@ -10,6 +10,8 @@ namespace ImageStoreAndAnalyze.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        DbSet<Family> Families { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -18,6 +20,20 @@ namespace ImageStoreAndAnalyze.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<FamilyUsers>()
+                .HasKey(fu => new { fu.FamilyID, fu.ApplicationUserId });
+
+            builder.Entity<FamilyUsers>()
+                .HasOne(fu => fu.Family)
+                .WithMany(u => u.FamilyUsers)
+                .HasForeignKey(fu => fu.FamilyID);
+
+            builder.Entity<FamilyUsers>()
+                .HasOne(u => u.User)
+                .WithMany(fu => fu.FamilyUsers)
+                .HasForeignKey(u => u.ApplicationUserId);
+
         }
 
         private void CreateUserRoles()

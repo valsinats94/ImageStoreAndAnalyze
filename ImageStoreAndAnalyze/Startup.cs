@@ -12,6 +12,8 @@ using ImageStoreAndAnalyze.Data;
 using ImageStoreAndAnalyze.Models;
 using ImageStoreAndAnalyze.Services;
 using Microsoft.Extensions.Logging;
+using ImageStoreAndAnalyze.Interfaces.Services;
+using ImageStoreAndAnalyze.Data.DatabaseServices;
 
 namespace ImageStoreAndAnalyze
 {
@@ -34,13 +36,21 @@ namespace ImageStoreAndAnalyze
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            var sp = services.BuildServiceProvider();
             // Add application services.
-            services.AddTransient<IEmailSender, EmailSender>();
+            RegisterApplicationServices(services);
+            
             //services.Configure<AuthMessageSenderOptions>(Configuration);
 
             services.AddTransient<SeedDefaultData>();
 
             services.AddMvc();
+        }
+
+        private void RegisterApplicationServices(IServiceCollection services)
+        {
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<IImageDatabaseService, ImageDatabaseService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

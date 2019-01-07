@@ -6,13 +6,15 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ImageStoreAndAnalyze.Models;
 using ImageProcess.Models;
+using SortMImage.Models.AnalyzeModels;
 
 namespace ImageStoreAndAnalyze.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        DbSet<Family> Families { get; set; }
-        DbSet<ImageModel> Images { get; set; }
+        public DbSet<Family> Families { get; set; }
+        public DbSet<ImageModel> Images { get; set; }
+        public DbSet<ImageTag> ImageTags { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -41,6 +43,14 @@ namespace ImageStoreAndAnalyze.Data
 
             builder.Entity<Family>()
                 .HasOne(i => i.MainImage);
+
+            builder.Entity<ImageModel>()
+                .HasOne(i => i.Family)
+                .WithMany(f => f.Images);
+
+            builder.Entity<ImageModel>()
+                .HasMany(im => im.ImageTags)
+                .WithOne(it => it.Image);
         }
 
         private void CreateUserRoles()

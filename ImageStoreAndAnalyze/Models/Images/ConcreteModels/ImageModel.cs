@@ -1,4 +1,5 @@
 ﻿using ImageStoreAndAnalyze.Interfaces;
+using ImageStoreAndAnalyze.Interfaces.Services;
 using ImageStoreAndAnalyze.Models;
 using ImageStoreAndAnalyze.Services;
 using SortMImage.Models.AnalyzeModels;
@@ -14,8 +15,19 @@ namespace ImageProcess.Models
     {
         #region Declarations
 
+        IServiceProvider serviceProvider;
+
         private string imagePath;
         private IList<ImageTag> imageTags;
+
+        #endregion
+
+        #region Constructors
+
+        public ImageModel(IServiceProvider serviceProvider)
+        {
+            this.serviceProvider = serviceProvider;
+        }
 
         #endregion
 
@@ -92,7 +104,7 @@ namespace ImageProcess.Models
 
         private void DeleteImageFromDB(ImageModel imageModel)
         {
-            ImageDatabaseService imageDBService = new ImageDatabaseService();
+            IImageDatabaseService imageDBService = serviceProvider.GetService(typeof(IImageDatabaseService)) as IImageDatabaseService;
             try
             {
                 imageDBService.DeleteImageFromDatabase(imageModel);

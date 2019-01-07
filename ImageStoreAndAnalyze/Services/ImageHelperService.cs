@@ -33,12 +33,12 @@ namespace ImageStoreAndAnalyze.Services
         //    return false;
         //}
 
-        public static List<ImageModel> ParsePhotoItemsToImageModels(List<PhotoItem> photoItems)
+        public static List<ImageModel> ParsePhotoItemsToImageModels(List<PhotoItem> photoItems, IServiceProvider serviceProvider)
         {
             List<ImageModel> imageModels = new List<ImageModel>();
             foreach (PhotoItem item in photoItems)
             {
-                ImageModel imageModel = new ImageModel();
+                ImageModel imageModel = new ImageModel(serviceProvider);
                 imageModel.Name = item.Description;
                 imageModel.FileName = item.Name;
                 imageModel.UploadedOn = item.UploadedOn;

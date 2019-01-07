@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ImageProcess.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace SortMImage.Models.AnalyzeModels
 {
@@ -10,5 +11,7 @@ namespace SortMImage.Models.AnalyzeModels
         public decimal Confidence { get; set; }
 
         public string Tag { get; set; }
+
+        public ImageModel Image { get; set; }
     }
 }

@@ -14,10 +14,10 @@ namespace ImageStoreAndAnalyze.Models.FamilyAccountViewModels
 
         #region Properties
 
-        [Display(Name = "Family name")]
+        [Display(Name = "Family Name")]
         public string FamilyName { get; set; }
 
-        [Display(Name = "Family main image")]
+        [Display(Name = "Family Main Image")]
         public byte[] Image { get; set; }
 
         #endregion

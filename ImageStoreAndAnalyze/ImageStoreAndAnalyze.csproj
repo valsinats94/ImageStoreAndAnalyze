@@ -7,6 +7,11 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20190107195946_CreateFamilyCosmetics.cs" />
+    <Compile Remove="Data\Migrations\20190107195946_CreateFamilyCosmetics.Designer.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.8" />

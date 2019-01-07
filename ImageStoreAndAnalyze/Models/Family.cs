@@ -12,6 +12,10 @@ namespace ImageStoreAndAnalyze.Models
     {
         [Key]
         public int ID { get; set; }
+
+        [Required]
+        public string FamilyName { get; set; }
+
         public ICollection<FamilyUsers> FamilyUsers { get; set; }
 
         [Required]

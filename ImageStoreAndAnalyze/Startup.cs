@@ -51,6 +51,7 @@ namespace ImageStoreAndAnalyze
         {
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IImageDatabaseService, ImageDatabaseService>();
+            services.AddTransient<IFamilyDatabaseService, FamilyDatabaseService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

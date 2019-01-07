@@ -1,4 +1,5 @@
-﻿using ImageStoreAndAnalyze.Interfaces;
+﻿using ImageProcess.Models;
+using ImageStoreAndAnalyze.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,5 +16,8 @@ namespace ImageStoreAndAnalyze.Models
 
         [Required]
         public ApplicationUser FamilyAdministrator { get; set; }
+
+        public ImageModel MainImage { get; set; }
+        public ICollection<ImageModel> Images { get; set; }
     }
 }

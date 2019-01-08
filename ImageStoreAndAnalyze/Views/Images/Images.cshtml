@@ -1,0 +1,39 @@
+﻿@inject UserManager<ApplicationUser> userManager
+
+@{
+    ViewData["Title"] = "Family Images";
+}
+
+<h2>@ViewData["Title"]</h2>
+<div class="col-md-6 col-md-offset-2">
+    <section>
+        <h4>Use another service to log in.</h4>
+        <hr />
+        @{
+            var user = await userManager.GetUserAsync(User);
+            if (user.FamilyUsers.Count == 0)
+            {
+                <div>
+                    <p>
+                        User does not exists in any family, neither is family admin. See <a href="@Url.Action("FamiliesManagement", null, new { area = string.Empty, controller = "Manage" })">
+                            <span>Families Management</span>>this article</a>
+                        for details on setting up family management or requests.
+                    </p>
+                </div>
+            }
+            else
+            {
+                <form asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                    @*<div>
+                        <p>
+                            @foreach (var provider in loginProviders)
+                            {
+                                <button type="submit" class="btn btn-default" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.Name</button>
+                            }
+                        </p>
+                    </div>*@
+                </form>
+            }
+        }
+    </section>
+</div>

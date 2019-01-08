@@ -14,9 +14,7 @@ namespace ImageProcess.Models
     public class ImageModel : Image
     {
         #region Declarations
-
-        IServiceProvider serviceProvider;
-
+        
         private string imagePath;
         private IList<ImageTag> imageTags;
 
@@ -24,9 +22,8 @@ namespace ImageProcess.Models
 
         #region Constructors
 
-        public ImageModel(IServiceProvider serviceProvider)
+        public ImageModel()
         {
-            this.serviceProvider = serviceProvider;
         }
 
         #endregion
@@ -53,7 +50,7 @@ namespace ImageProcess.Models
                     return;
 
                 imagePath = value;
-                GetImageData(imagePath);
+                //GetImageData(imagePath);
             }
         }
 
@@ -85,36 +82,36 @@ namespace ImageProcess.Models
 
         #region Methods
 
-        private void GetImageData(string imagePath)
-        {
-            if (string.IsNullOrEmpty(imagePath))
-                return;
+        //private void GetImageData(string imagePath)
+        //{
+        //    if (string.IsNullOrEmpty(imagePath))
+        //        return;
 
-            if (!File.Exists(imagePath))
-            {
-                DeleteImageFromDB(this);
-                return;
-            }
+        //    if (!File.Exists(imagePath))
+        //    {
+        //        DeleteImageFromDB(this);
+        //        return;
+        //    }
 
-            //if (!ImageHelperService.IsImageFile(imagePath))
-            //    throw new FileNotAnImageException();
+        //    //if (!ImageHelperService.IsImageFile(imagePath))
+        //    //    throw new FileNotAnImageException();
 
-            ImageData = File.ReadAllBytes(imagePath);
-        }
+        //    ImageData = File.ReadAllBytes(imagePath);
+        //}
 
-        private void DeleteImageFromDB(ImageModel imageModel)
-        {
-            IImageDatabaseService imageDBService = serviceProvider.GetService(typeof(IImageDatabaseService)) as IImageDatabaseService;
-            try
-            {
-                imageDBService.DeleteImageFromDatabase(imageModel);
-            }
-            catch
-            {
-                return;
-            }
+        //private void DeleteImageFromDB(ImageModel imageModel)
+        //{
+        //    IImageDatabaseService imageDBService = serviceProvider.GetService(typeof(IImageDatabaseService)) as IImageDatabaseService;
+        //    try
+        //    {
+        //        imageDBService.DeleteImageFromDatabase(imageModel);
+        //    }
+        //    catch
+        //    {
+        //        return;
+        //    }
 
-        }
+        //}
 
         #endregion
     }

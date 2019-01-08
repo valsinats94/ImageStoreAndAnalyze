@@ -38,7 +38,7 @@ namespace ImageStoreAndAnalyze.Services
             List<ImageModel> imageModels = new List<ImageModel>();
             foreach (PhotoItem item in photoItems)
             {
-                ImageModel imageModel = new ImageModel(serviceProvider);
+                ImageModel imageModel = new ImageModel();
                 imageModel.Name = item.Description;
                 imageModel.FileName = item.Name;
                 imageModel.UploadedOn = item.UploadedOn;

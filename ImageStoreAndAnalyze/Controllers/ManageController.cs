@@ -17,6 +17,7 @@ using System.Security.Claims;
 using ImageStoreAndAnalyze.Models.FamilyAccountViewModels;
 using ImageStoreAndAnalyze.Interfaces.Services;
 using ImageProcess.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace ImageStoreAndAnalyze.Controllers
 {
@@ -597,20 +598,20 @@ namespace ImageStoreAndAnalyze.Controllers
                 throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
             }
 
-            ImageModel familyMainImage = new ImageModel(serviceProvider)
-            {
-               ImageData = model.Image,
+            //ImageModel familyMainImage = new ImageModel(serviceProvider)
+            //{
+            //   ImageData = model.Image,
                
-            };
+            //};
 
             Family family = new Family
             {
                 FamilyAdministrator = user,
-                MainImage = familyMainImage,
+                //MainImage = familyMainImage,
                 FamilyName = model.FamilyName
             };
 
-            familyMainImage.Family = family;
+            //familyMainImage.Family = family;
 
             IFamilyDatabaseService familyDatabaseService = serviceProvider.GetService(typeof(IFamilyDatabaseService)) as IFamilyDatabaseService;
             familyDatabaseService.AddFamily(family);
@@ -620,6 +621,25 @@ namespace ImageStoreAndAnalyze.Controllers
             StatusMessage = "You created family successfully.";
 
             return RedirectToAction(nameof(FamiliesManagement));
+        }
+
+        [HttpPost]
+        public ActionResult UploadFile(CreateFamilyViewModel model)
+        {
+            //string path = Server.MapPath("~/Uploads/");
+            //if (!Directory.Exists(path))
+            //{
+            //    Directory.CreateDirectory(path);
+            //}
+
+            //if (postedFile != null)
+            //{
+            //    string fileName = Path.GetFileName(postedFile.FileName);
+            //    postedFile.SaveAs(path + fileName);
+            //    ViewBag.Message += string.Format("<b>{0}</b> uploaded.<br />", fileName);
+            //}
+
+            return View();
         }
 
         #region Helpers

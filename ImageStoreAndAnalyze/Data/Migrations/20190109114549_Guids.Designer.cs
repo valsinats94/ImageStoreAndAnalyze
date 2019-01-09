@@ -4,14 +4,16 @@ using ImageStoreAndAnalyze.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ImageStoreAndAnalyze.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190109114549_Guids")]
+    partial class Guids
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,13 +43,9 @@ namespace ImageStoreAndAnalyze.Data.Migrations
 
                     b.Property<DateTime>("UploadedOn");
 
-                    b.Property<string>("UserId");
-
                     b.HasKey("ImageId");
 
                     b.HasIndex("FamilyID");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Images");
                 });
@@ -273,10 +271,6 @@ namespace ImageStoreAndAnalyze.Data.Migrations
                     b.HasOne("ImageStoreAndAnalyze.Models.Family", "Family")
                         .WithMany("Images")
                         .HasForeignKey("FamilyID");
-
-                    b.HasOne("ImageStoreAndAnalyze.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("ImageStoreAndAnalyze.Models.Family", b =>

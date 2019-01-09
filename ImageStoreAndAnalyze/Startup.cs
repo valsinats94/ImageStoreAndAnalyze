@@ -49,6 +49,7 @@ namespace ImageStoreAndAnalyze
 
         private void RegisterApplicationServices(IServiceCollection services)
         {
+            services.AddSession();
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IImageDatabaseService, ImageDatabaseService>();
             services.AddTransient<IFamilyDatabaseService, FamilyDatabaseService>();
@@ -72,6 +73,7 @@ namespace ImageStoreAndAnalyze
 
             app.UseAuthentication();
 
+            app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

@@ -23,5 +23,7 @@ namespace ImageStoreAndAnalyze.Models
 
         public ImageModel MainImage { get; set; }
         public ICollection<ImageModel> Images { get; set; }
+
+        public Guid Guid { get; set; }
     }
 }

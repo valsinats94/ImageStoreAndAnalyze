@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ImageProcess.Models
 {
-    public abstract class Image
+    public abstract class Image : IImage
     {
         #region Declarations
 

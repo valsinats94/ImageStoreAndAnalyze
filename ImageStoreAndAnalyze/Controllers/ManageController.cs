@@ -18,6 +18,11 @@ using ImageStoreAndAnalyze.Models.FamilyAccountViewModels;
 using ImageStoreAndAnalyze.Interfaces.Services;
 using ImageProcess.Models;
 using Microsoft.AspNetCore.Http;
+using ImageStoreAndAnalyze.Utilities;
+using System.Net;
+using System.IO;
+using ImageStoreAndAnalyze.Data.DatabaseServices;
+using ImageStoreAndAnalyze.Data;
 
 namespace ImageStoreAndAnalyze.Controllers
 {
@@ -579,7 +584,27 @@ namespace ImageStoreAndAnalyze.Controllers
                 throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
             }
 
-            var model = new CreateFamilyViewModel { StatusMessage = StatusMessage };
+            IImageDatabaseService imageDatabaseService = serviceProvider.GetService(typeof(IImageDatabaseService)) as IImageDatabaseService;
+            Guid imageGuid;
+            Guid.TryParse(HttpContext.Session.GetString(user.SecurityStamp), out imageGuid);
+
+            var model = new CreateFamilyViewModel
+            {
+                StatusMessage = StatusMessage,
+                ImageModel = imageDatabaseService.GetFamilyByGuid(imageGuid) as ImageModel
+            };
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetFamily(CreateFamilyViewModel model)
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+            }
+
             return View(model);
         }
 
@@ -598,20 +623,20 @@ namespace ImageStoreAndAnalyze.Controllers
                 throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
             }
 
-            //ImageModel familyMainImage = new ImageModel(serviceProvider)
-            //{
-            //   ImageData = model.Image,
-               
-            //};
+            IImageDatabaseService imageDatabaseService = serviceProvider.GetService(typeof(IImageDatabaseService)) as IImageDatabaseService;
+            Guid imageGuid;
+            Guid.TryParse(HttpContext.Session.GetString(user.SecurityStamp), out imageGuid);
+            ImageModel familyMainImage = imageDatabaseService.GetFamilyByGuid(imageGuid) as ImageModel;
 
             Family family = new Family
             {
                 FamilyAdministrator = user,
-                //MainImage = familyMainImage,
-                FamilyName = model.FamilyName
+                FamilyName = model.FamilyName,
+                MainImage = familyMainImage,
+                Guid = Guid.NewGuid()
             };
 
-            //familyMainImage.Family = family;
+            familyMainImage.Family = family;
 
             IFamilyDatabaseService familyDatabaseService = serviceProvider.GetService(typeof(IFamilyDatabaseService)) as IFamilyDatabaseService;
             familyDatabaseService.AddFamily(family);
@@ -626,6 +651,31 @@ namespace ImageStoreAndAnalyze.Controllers
         [HttpPost]
         public ActionResult UploadFile(CreateFamilyViewModel model)
         {
+            // Use Path.GetFileName to obtain the file name, which will
+            // strip any path information passed as part of the
+            // FileName property. HtmlEncode the result in case it must 
+            // be returned in an error message.
+            var fileName = WebUtility.HtmlEncode(
+                Path.GetFileName(model.Image.FileName));
+
+            var image = FileHelpers.ProcessFormFile(model.Image, logger, StatusMessage);
+
+            var user = userManager.GetUserAsync(User);
+
+            ImageModel imageModel = new ImageModel()
+            {
+                ImageData = image.Result,
+                FileName = fileName,
+                UploadedOn = DateTime.Now,
+                Name = fileName,
+                Guid = Guid.NewGuid(),
+                User = user.Result
+            };
+
+            IImageDatabaseService imageDatabaseService = serviceProvider.GetService(typeof(IImageDatabaseService)) as IImageDatabaseService;
+            imageDatabaseService.AddImageToDatabase(imageModel);
+
+            HttpContext.Session.SetString(user.Result.SecurityStamp, imageModel.Guid.ToString());
             //string path = Server.MapPath("~/Uploads/");
             //if (!Directory.Exists(path))
             //{
@@ -639,7 +689,7 @@ namespace ImageStoreAndAnalyze.Controllers
             //    ViewBag.Message += string.Format("<b>{0}</b> uploaded.<br />", fileName);
             //}
 
-            return View();
+            return RedirectToAction(nameof(CreateFamily));
         }
 
         #region Helpers

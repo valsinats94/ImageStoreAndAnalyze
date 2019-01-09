@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ImageProcess.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -19,9 +20,10 @@ namespace ImageStoreAndAnalyze.Models.FamilyAccountViewModels
         public string FamilyName { get; set; }
 
         [Display(Name = "Family Main Image")]
-        [Required(ErrorMessage = "Please select file.")]
         [RegularExpression(@"([a-zA-Z0-9\s_\\.\-:])+(.png|.jpg|.gif)$", ErrorMessage = "Only Image files allowed.")]
         public IFormFile Image { get; set; }
+
+        public ImageModel ImageModel { get; set; }
 
         #endregion
     }

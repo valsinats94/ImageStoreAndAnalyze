@@ -11,7 +11,7 @@ namespace ImageStoreAndAnalyze.Data.DatabaseServices
 {
     public class FamilyDatabaseService : BaseDatabaseService, IFamilyDatabaseService
     {
-        public FamilyDatabaseService(DbContext context, IServiceProvider serviceProvider) 
+        public FamilyDatabaseService(ApplicationDbContext context, IServiceProvider serviceProvider) 
             : base(context, serviceProvider)
         {
         }
@@ -56,6 +56,16 @@ namespace ImageStoreAndAnalyze.Data.DatabaseServices
 
             contextFamily.FamilyAdministrator = user as ApplicationUser;
             context.SaveChangesAsync();
+        }
+
+        public IFamily GetUserAdminFamily(IUser userAdmin)
+        {
+            return context.Families.FirstOrDefault(f => f.FamilyAdministrator.Id == userAdmin.Id);
+        }
+
+        public IFamily GetFamilyByGuid(Guid guid)
+        {
+            return context.Families.FirstOrDefault(f => f.Guid == guid);
         }
     }
 }

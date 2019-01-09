@@ -7,10 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using ImageStoreAndAnalyze.Models;
 using ImageProcess.Models;
 using SortMImage.Models.AnalyzeModels;
+using ImageStoreAndAnalyze.Interfaces;
 
 namespace ImageStoreAndAnalyze.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IDbContext
     {
         public DbSet<Family> Families { get; set; }
         public DbSet<ImageModel> Images { get; set; }

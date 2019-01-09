@@ -13,5 +13,7 @@ namespace ImageStoreAndAnalyze.Interfaces.Services
         void RemoveFamily(IFamily family);
 
         void ChangeFamilyAdmin(IFamily family, IUser user);
+
+        IFamily GetUserAdminFamily(IUser userAdmin);
     }
 }

@@ -1,20 +1,15 @@
-﻿using ImageStoreAndAnalyze.Interfaces;
-using ImageStoreAndAnalyze.Interfaces.Services;
-using ImageStoreAndAnalyze.Models;
-using ImageStoreAndAnalyze.Services;
+﻿using ImageStoreAndAnalyze.Models;
 using SortMImage.Models.AnalyzeModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Text;
 
 namespace ImageProcess.Models
 {
     public class ImageModel : Image
     {
         #region Declarations
-        
+
         private string imagePath;
         private IList<ImageTag> imageTags;
 
@@ -78,6 +73,9 @@ namespace ImageProcess.Models
 
         public Family Family { get; set; }
 
+        public Guid Guid { get; set; }
+
+        public ApplicationUser User { get; set; }
         #endregion
 
         #region Methods

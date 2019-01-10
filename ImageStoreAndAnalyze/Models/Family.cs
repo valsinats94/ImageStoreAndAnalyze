@@ -10,13 +10,26 @@ namespace ImageStoreAndAnalyze.Models
 {
     public class Family : IFamily
     {
+        private ICollection<FamilyUsers> familyUsers;
+
         [Key]
         public int ID { get; set; }
 
         [Required]
         public string FamilyName { get; set; }
 
-        public ICollection<FamilyUsers> FamilyUsers { get; set; }
+        public ICollection<FamilyUsers> FamilyUsers
+        {
+            get
+            {
+                if (familyUsers == null)
+                    familyUsers = new List<FamilyUsers>();
+
+                return familyUsers;
+            }
+
+            set => familyUsers = value;
+        }
 
         [Required]
         public ApplicationUser FamilyAdministrator { get; set; }
@@ -25,5 +38,6 @@ namespace ImageStoreAndAnalyze.Models
         public ICollection<ImageModel> Images { get; set; }
 
         public Guid Guid { get; set; }
+        
     }
 }

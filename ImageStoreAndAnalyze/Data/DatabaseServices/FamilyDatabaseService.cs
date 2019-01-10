@@ -24,7 +24,7 @@ namespace ImageStoreAndAnalyze.Data.DatabaseServices
             }
 
             context.Families.Add(family as Family);
-            context.SaveChangesAsync();
+            context.SaveChanges();
         }
 
         public void RemoveFamily(IFamily family)
@@ -54,18 +54,45 @@ namespace ImageStoreAndAnalyze.Data.DatabaseServices
             if (contextFamily == null)
                 throw new ArgumentNullException(nameof(family));
 
+            user.IsFamilyAdmin = true;
             contextFamily.FamilyAdministrator = user as ApplicationUser;
-            context.SaveChangesAsync();
+            context.SaveChanges();
         }
 
-        public IFamily GetUserAdminFamily(IUser userAdmin)
+        public ICollection<IFamily> GetUserAdminFamilies(IUser userAdmin)
         {
-            return context.Families.FirstOrDefault(f => f.FamilyAdministrator.Id == userAdmin.Id);
+            return context.Families.Where(f => f.FamilyAdministrator.Id == userAdmin.Id).Cast<IFamily>().ToList();
+        }
+
+        public ICollection<IFamily> GetUserFamiliesMemberOf(IUser user)
+        {
+            return context.Families.Where(f => f.FamilyUsers.Any(fu => fu.ApplicationUserId == user.Id)).Cast<IFamily>().ToList();
+        }
+
+        public ICollection<IFamily> GetUserAdminFamiliesWithMainImage(IUser userAdmin)
+        {
+            return context.Families.Where(f => f.FamilyAdministrator.Id == userAdmin.Id)
+                        .Include(f => f.MainImage)
+                        .Include(f => f.FamilyAdministrator).Cast<IFamily>().ToList();
+        }
+
+        public ICollection<IFamily> GetUserFamiliesMemberOfWithMainImage(IUser user)
+        {
+            return context.Families.Where(f => f.FamilyUsers.Any(fu => fu.ApplicationUserId == user.Id)).Include(f => f.MainImage).Cast<IFamily>().ToList();
         }
 
         public IFamily GetFamilyByGuid(Guid guid)
         {
             return context.Families.FirstOrDefault(f => f.Guid == guid);
+        }
+
+        public void RemoveFamilyMemeber(IFamily familyParam, IUser member)
+        {
+            Family family = context.Families.Include(f => f.FamilyUsers).FirstOrDefault(f => f.Guid == familyParam.Guid);
+            FamilyUsers familyUsers = family.FamilyUsers.FirstOrDefault(fu => fu.User.SecurityStamp == member.SecurityStamp);
+            family.FamilyUsers.Remove(familyUsers);
+
+            context.SaveChanges();
         }
     }
 }

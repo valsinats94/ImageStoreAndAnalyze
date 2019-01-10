@@ -1,0 +1,15 @@
+﻿@inject UserManager<ApplicationUser> UserManager
+@model RefuseFamilyAdminViewModel
+@{
+    ViewData["Title"] = "Manage Families";
+    ViewData.AddActivePage(ManageNavPages.FamiliesManagement);
+    Model.ApplicationUser = UserManager.GetUserAsync(User).Result;
+}
+
+<h4>@ViewData["Title"]</h4>
+@Html.Partial("_StatusMessage", Model.StatusMessage)
+
+@*за да откаже определен администратор да бъде админ - то той трябва да предложи алтернативен
+
+dropdown или списък с изобрацжение с членовете на семейството
+бутон за MakeUserAdminOfTheFamily*@

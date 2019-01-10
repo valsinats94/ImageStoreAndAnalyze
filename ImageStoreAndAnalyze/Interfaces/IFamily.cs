@@ -1,4 +1,5 @@
-﻿using ImageStoreAndAnalyze.Models;
+﻿using ImageProcess.Models;
+using ImageStoreAndAnalyze.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,14 @@ namespace ImageStoreAndAnalyze.Interfaces
 {
     public interface IFamily
     {
-        //ICollection<IFamilyUsers> FamilyUsers { get; set; }
+        string FamilyName { get; set; }
+        
+        ApplicationUser FamilyAdministrator { get; set; }
+
+        ImageModel MainImage { get; set; }
+
+        ICollection<ImageModel> Images { get; set; }
+
+        Guid Guid { get; set; }
     }
 }

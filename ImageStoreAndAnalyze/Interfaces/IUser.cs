@@ -5,5 +5,7 @@
         string Id { get; set; }
 
         bool IsFamilyAdmin { get; set; }
+
+        string SecurityStamp { get; set; }
     }
 }

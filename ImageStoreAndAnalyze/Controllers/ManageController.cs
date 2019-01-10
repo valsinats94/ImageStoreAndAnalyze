@@ -22,7 +22,7 @@ using ImageStoreAndAnalyze.Utilities;
 using System.Net;
 using System.IO;
 using ImageStoreAndAnalyze.Data.DatabaseServices;
-using ImageStoreAndAnalyze.Data;
+using System.Runtime.Serialization.Json;
 
 namespace ImageStoreAndAnalyze.Controllers
 {
@@ -542,7 +542,14 @@ namespace ImageStoreAndAnalyze.Controllers
                 throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
             }
 
-            var model = new FamiliesManagementViewModel { StatusMessage = StatusMessage };
+            IFamilyDatabaseService familyDatabaseService = serviceProvider.GetService(typeof(IFamilyDatabaseService)) as IFamilyDatabaseService;
+            var model = new FamiliesManagementViewModel
+            {
+                StatusMessage = StatusMessage,
+                FamiliesAdminOf = familyDatabaseService.GetUserAdminFamiliesWithMainImage(user),
+                FamiliesMemberOf = familyDatabaseService.GetUserFamiliesMemberOfWithMainImage(user)
+            };
+
             return View(model);
         }
 
@@ -573,6 +580,73 @@ namespace ImageStoreAndAnalyze.Controllers
             StatusMessage = "Your changes were made successfully.";
 
             return RedirectToAction(nameof(FamiliesManagement));
+        }
+                
+        [HttpGet]
+        public async Task<IActionResult> RefuseFamilyAdmin(Guid guid)
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+            }
+
+            IFamilyDatabaseService familyDatabaseService = serviceProvider.GetService(typeof(IFamilyDatabaseService)) as IFamilyDatabaseService;
+            var model = new RefuseFamilyAdminViewModel()
+            {
+                StatusMessage = StatusMessage
+            };
+            //var model = new FamiliesManagementViewModel
+            //{
+            //    StatusMessage = StatusMessage,
+            //    FamiliesAdminOf = familyDatabaseService.GetUserAdminFamiliesWithMainImage(user),
+            //    FamiliesMemberOf = familyDatabaseService.GetUserFamiliesMemberOfWithMainImage(user)
+            //};
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// TODO REFACTOR!!!
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="JSONModel"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> LeaveFamily(Guid guid)
+        {
+            ///// It is not a bad idea
+            //DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(FamiliesManagementViewModel));
+            //FamiliesManagementViewModel yourobject = (FamiliesManagementViewModel)ser.ReadObject(UtilitiesLibrary.GenerateStreamFromString(JSONModel));
+
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+            }
+
+            IFamilyDatabaseService familyDatabaseService = serviceProvider.GetService(typeof(IFamilyDatabaseService)) as IFamilyDatabaseService;
+            var model = new FamiliesManagementViewModel
+            {
+                StatusMessage = StatusMessage,
+                FamiliesAdminOf = familyDatabaseService.GetUserAdminFamiliesWithMainImage(user),
+                FamiliesMemberOf = familyDatabaseService.GetUserFamiliesMemberOfWithMainImage(user)
+            };
+
+            Family family = familyDatabaseService.GetFamilyByGuid(guid) as Family;
+
+            try
+            {
+                familyDatabaseService.RemoveFamilyMemeber(family, user);
+            }
+            catch(Exception ex)
+            {
+                return View(nameof(FamiliesManagement), model);
+            }
+                       
+            logger.LogInformation($"User left family {family.FamilyName} succesfully.");
+            StatusMessage = $"You left family {family.FamilyName} succesfully.";
+
+            return View(nameof(FamiliesManagement), model);
         }
 
         [HttpGet]
@@ -633,13 +707,15 @@ namespace ImageStoreAndAnalyze.Controllers
                 FamilyAdministrator = user,
                 FamilyName = model.FamilyName,
                 MainImage = familyMainImage,
-                Guid = Guid.NewGuid()
+                Guid = Guid.NewGuid(),
             };
 
             familyMainImage.Family = family;
+            family.FamilyUsers.Add(new FamilyUsers() { Family = family, User = user });
 
             IFamilyDatabaseService familyDatabaseService = serviceProvider.GetService(typeof(IFamilyDatabaseService)) as IFamilyDatabaseService;
             familyDatabaseService.AddFamily(family);
+            familyDatabaseService.ChangeFamilyAdmin(family, user);
 
             //await _signInManager.SignInAsync(user, isPersistent: false);
             logger.LogInformation("User created family succesfully.");

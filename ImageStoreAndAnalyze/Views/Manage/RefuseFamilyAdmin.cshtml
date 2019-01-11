@@ -8,8 +8,35 @@
 
 <h4>@ViewData["Title"]</h4>
 @Html.Partial("_StatusMessage", Model.StatusMessage)
+<div class="row">
+    <div class="col-md-6">
+        @if (Model.ApplicationUser.IsFamilyAdmin && Model.FamilyMembers.Count > 0)
+        {
+            @foreach (var member in Model.FamilyMembers)
+            {
+                <table>
+                    <tr>
+                        <td>
+                            <ul>
+                                <li>
+                                    @member.Email
+                                </li>
+                                <li>
+                                    @member.SecurityStamp
+                                </li>
+                            </ul>
+                        </td>
+                        <td>
+                            @Html.ActionLink("Propose", "ProposeNewFamilyAdmin", "Manage", new { userSecurityStamp = member.SecurityStamp, guid = Model.FamilyRefuseGuid })
+                        </td>
+                    </tr>
+                </table>
+            }
 
+        }
+    </div>
+</div>
 @*за да откаже определен администратор да бъде админ - то той трябва да предложи алтернативен
 
-dropdown или списък с изобрацжение с членовете на семейството
-бутон за MakeUserAdminOfTheFamily*@
+    dropdown или списък с изобрацжение с членовете на семейството
+    бутон за MakeUserAdminOfTheFamily*@

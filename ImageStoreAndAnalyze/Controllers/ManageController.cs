@@ -23,6 +23,7 @@ using System.Net;
 using System.IO;
 using ImageStoreAndAnalyze.Data.DatabaseServices;
 using System.Runtime.Serialization.Json;
+using ImageStoreAndAnalyze.Interfaces;
 
 namespace ImageStoreAndAnalyze.Controllers
 {
@@ -125,7 +126,7 @@ namespace ImageStoreAndAnalyze.Controllers
             if (model.FirstName != firstName)
             {
                 var claim = userClaims?.FirstOrDefault(uc => uc.Type == ClaimTypes.GivenName);
-                if  (claim != null)
+                if (claim != null)
                     await userManager.RemoveClaimAsync(user, claim);
 
                 claimsToAdd.Add(new Claim(ClaimTypes.GivenName, model.FirstName));
@@ -581,7 +582,43 @@ namespace ImageStoreAndAnalyze.Controllers
 
             return RedirectToAction(nameof(FamiliesManagement));
         }
-                
+
+        public async Task<IActionResult> ProposeNewFamilyAdmin(string userSecurityStamp, Guid guid)
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+            }
+
+            IFamilyDatabaseService familyDatabaseService = serviceProvider.GetService(typeof(IFamilyDatabaseService)) as IFamilyDatabaseService;
+            var model = new FamiliesManagementViewModel
+            {
+                StatusMessage = StatusMessage,
+                FamiliesAdminOf = familyDatabaseService.GetUserAdminFamiliesWithMainImage(user),
+                FamiliesMemberOf = familyDatabaseService.GetUserFamiliesMemberOfWithMainImage(user)
+            };
+
+            try
+            {
+                IUser newAdmin = userManager.Users.FirstOrDefault(u => u.SecurityStamp.Equals(userSecurityStamp));
+                IFamily family = familyDatabaseService.GetFamilyByGuid(guid);
+                familyDatabaseService.ChangeFamilyAdmin(family, newAdmin);
+            }
+            catch (Exception ex)
+            {
+                logger.LogInformation($"Changing family administartor failed.");
+                StatusMessage = $"Changing family administartor failed.";
+
+                return View(nameof(FamiliesManagement), model);
+            }
+
+            logger.LogInformation($"Family administartor changed succesfully.");
+            StatusMessage = $"You changed family administrator succesfully.";
+
+            return View(nameof(FamiliesManagement), model);
+        }
+
         [HttpGet]
         public async Task<IActionResult> RefuseFamilyAdmin(Guid guid)
         {
@@ -592,9 +629,12 @@ namespace ImageStoreAndAnalyze.Controllers
             }
 
             IFamilyDatabaseService familyDatabaseService = serviceProvider.GetService(typeof(IFamilyDatabaseService)) as IFamilyDatabaseService;
+            IFamily family = familyDatabaseService.GetFamilyByGuid(guid);
             var model = new RefuseFamilyAdminViewModel()
             {
-                StatusMessage = StatusMessage
+                StatusMessage = StatusMessage,
+                FamilyMembers = familyDatabaseService.GetFamilyMemebers(family),
+                FamilyRefuseGuid = guid
             };
             //var model = new FamiliesManagementViewModel
             //{
@@ -638,11 +678,11 @@ namespace ImageStoreAndAnalyze.Controllers
             {
                 familyDatabaseService.RemoveFamilyMemeber(family, user);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return View(nameof(FamiliesManagement), model);
             }
-                       
+
             logger.LogInformation($"User left family {family.FamilyName} succesfully.");
             StatusMessage = $"You left family {family.FamilyName} succesfully.";
 

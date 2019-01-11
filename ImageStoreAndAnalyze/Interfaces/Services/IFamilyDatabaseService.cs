@@ -25,5 +25,7 @@ namespace ImageStoreAndAnalyze.Interfaces.Services
         ICollection<IFamily> GetUserFamiliesMemberOfWithMainImage(IUser user);
 
         void RemoveFamilyMemeber(IFamily family, IUser member);
+
+        ICollection<ApplicationUser> GetFamilyMemebers(IFamily familyParam);
     }
 }

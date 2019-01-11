@@ -94,5 +94,13 @@ namespace ImageStoreAndAnalyze.Data.DatabaseServices
 
             context.SaveChanges();
         }
+
+        public ICollection<ApplicationUser> GetFamilyMemebers(IFamily familyParam)
+        {
+            Family family = context.Families.Include(f => f.FamilyUsers).FirstOrDefault(f => f.Guid == familyParam.Guid);
+            var ids = family.FamilyUsers.SelectMany(f => new List<string> { f.ApplicationUserId }).ToList();
+
+            return context.Users.Where(u => ids.Contains(u.Id.ToString())).ToList();
+        }
     }
 }

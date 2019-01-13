@@ -3,6 +3,7 @@ using ImageStoreAndAnalyze.Interfaces.Services;
 using ImageStoreAndAnalyze.Models;
 using ImageStoreAndAnalyze.Models.RequestsViewModels;
 using ImageStoreAndAnalyze.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace ImageStoreAndAnalyze.Controllers
 {
+    [Authorize]
     [Route("[controller]/[action]")]
     public class RequestsController : Controller
     {
@@ -54,8 +56,7 @@ namespace ImageStoreAndAnalyze.Controllers
             IFamilyRequestsDatabaseService familyRequestsDatabaseService = serviceProvider.GetService(typeof(IFamilyRequestsDatabaseService)) as IFamilyRequestsDatabaseService;
             ApplicationUser user = familyRequestsDatabaseService.GetUserIncludesUserFamilies(userOnly) as ApplicationUser;
             IFamilyDatabaseService familyDatabaseService = serviceProvider.GetService(typeof(IFamilyDatabaseService)) as IFamilyDatabaseService;
-
-
+            
             var model = new RequestsViewModel()
             {
                 ApplicationUser = user,
@@ -77,6 +78,7 @@ namespace ImageStoreAndAnalyze.Controllers
             }
 
             ViewData["ReturnUrl"] = returnUrl;
+            
             return View(model);
         }
 

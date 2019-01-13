@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace ImageStoreAndAnalyze.Controllers
 {
+    [Authorize]
     [Route("[controller]/[action]")]
     public class ImagesController : Controller
     {

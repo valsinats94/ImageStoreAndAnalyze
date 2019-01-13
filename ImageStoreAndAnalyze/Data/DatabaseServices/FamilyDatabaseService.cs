@@ -38,6 +38,14 @@ namespace ImageStoreAndAnalyze.Data.DatabaseServices
             context.SaveChangesAsync();
         }
 
+        public ICollection<Family> GetAllFamiliesAndRelatedData()
+        {
+            return context.Families
+                        .Include(f => f.FamilyAdministrator)
+                        .Include(f => f.FamilyUsers)
+                        .Include(f => f.MainImage).ToList();
+        }
+
         public void ChangeFamilyAdmin(IFamily family, IUser user)
         {
             if (family == null)
@@ -74,6 +82,14 @@ namespace ImageStoreAndAnalyze.Data.DatabaseServices
             return context.Families.Where(f => f.FamilyAdministrator.Id == userAdmin.Id)
                         .Include(f => f.MainImage)
                         .Include(f => f.FamilyAdministrator).Cast<IFamily>().ToList();
+        }
+
+        public ICollection<IFamily> GetUserAdminFamiliesWithMainImageAndRequests(IUser userAdmin)
+        {
+            return context.Families.Where(f => f.FamilyAdministrator.Id == userAdmin.Id)
+                        .Include(f => f.MainImage)
+                        .Include(f => f.FamilyAdministrator)
+                        .Include(f => f.FamilyRequests).Cast<IFamily>().ToList();
         }
 
         public ICollection<IFamily> GetUserFamiliesMemberOfWithMainImage(IUser user)

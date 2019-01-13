@@ -12,6 +12,8 @@ namespace ImageStoreAndAnalyze.Interfaces.Services
 
         void RemoveFamily(IFamily family);
 
+        ICollection<Family> GetAllFamiliesAndRelatedData();
+
         void ChangeFamilyAdmin(IFamily family, IUser user);
 
         IFamily GetFamilyByGuid(Guid guid);
@@ -21,6 +23,8 @@ namespace ImageStoreAndAnalyze.Interfaces.Services
         ICollection<IFamily> GetUserFamiliesMemberOf(IUser user);
 
         ICollection<IFamily> GetUserAdminFamiliesWithMainImage(IUser userAdmin);
+
+        ICollection<IFamily> GetUserAdminFamiliesWithMainImageAndRequests(IUser userAdmin);
 
         ICollection<IFamily> GetUserFamiliesMemberOfWithMainImage(IUser user);
 

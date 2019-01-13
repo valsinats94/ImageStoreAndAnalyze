@@ -18,5 +18,8 @@ namespace ImageStoreAndAnalyze.Interfaces
         ICollection<ImageModel> Images { get; set; }
 
         Guid Guid { get; set; }
+
+        ICollection<FamilyRequest> FamilyRequests { get; set; }
+
     }
 }

@@ -9,5 +9,7 @@ namespace ImageStoreAndAnalyze.Models
         public ICollection<FamilyUsers> FamilyUsers { get; set; }
 
         public bool IsFamilyAdmin { get; set; }
+
+        public ICollection<FamilyRequest> FamilyRequests { get; set; }
     }
 }

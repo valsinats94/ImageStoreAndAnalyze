@@ -1,37 +1,149 @@
-﻿@inject UserManager<ApplicationUser> userManager
-
+﻿@model RequestsViewModel
+@inject UserManager<ApplicationUser> userManager
 @{
     ViewData["Title"] = "User Family Requests";
 }
-
-<h2>@ViewData["Title"]</h2>
-<div class="col-md-6 col-md-offset-2">
-    <section>
-        <h4>Use another service to log in.</h4>
-        <hr />
-        @{
-            var user = await userManager.GetUserAsync(User);
-            if (user.FamilyUsers.Count == 0)
-            {
-                <div>
-                    <p>
-                        
-                    </p>
-                </div>
-            }
-            else
-            {
-                <form asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
-                    @*<div>
-                        <p>
-                            @foreach (var provider in loginProviders)
-                            {
-                                <button type="submit" class="btn btn-default" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.Name</button>
-                            }
-                        </p>
-                    </div>*@
-                </form>
-            }
+<head>
+    <style>
+        #img_container {
+            position: relative;
+            display: inline-block;
+            text-align: center;
+            border: 1px solid red;
         }
-    </section>
+
+        #button {
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+        }
+    </style>
+</head>
+<h2>@ViewData["Title"]</h2>
+<br />
+
+@if (Model.ApplicationUser.IsFamilyAdmin)
+{
+    <h3>Your family requests</h3>
+    @foreach (var family in Model.FamiliesUserAdministratorOf)
+    {
+        @if (family.FamilyRequests != null && family.FamilyRequests.Where(fr => !fr.IsProcessed).Count() > 0)
+        {
+            <table>
+                <tr>
+                    <td>@family.FamilyName</td>
+                    <td>
+                        @foreach (var request in family.FamilyRequests.Where(fr => !fr.IsProcessed))
+                        {
+                            <ul>
+                                <li><label>Request by user: </label>@request.RequestByUser.UserName</li>
+                                <li><label>On date: </label>@request.SendDate</li>
+                                <li><label>Requested family: </label>@request.RequestedFamily.FamilyName</li>
+                                <li>
+                                    <div class="form-group">
+                                            <button name="approve" class="btn btn-success" id="approve"
+                                                    value="@request.Guid"
+                                                    onclick="sendApproveRequest(this)">
+                                                Approve
+                                            </button>
+                                            <button name="reject" class="btn btn-danger" id="cancel"
+                                                    value="@request.Guid"
+                                                    onclick="sendRejectRequest(this)">
+                                                Reject
+                                            </button>
+                                    </div>
+                                </li>
+                            </ul>
+                        }
+                    </td>
+                </tr>
+
+            </table>
+        }
+    }
+}
+<script>
+    var count = 0;
+
+    function hide(node) {
+        count += 1;
+        node.style.opacity = 0;
+    };
+
+    function show(node) {
+        node.style.opacity = 100;
+    };
+
+    function sendSubmitToJoin(node) {
+        var nodeValue = node.value
+        console.log(nodeValue);
+        $.ajax({
+            type: "POST",
+            data: { familyGuid: nodeValue },
+            url: "/Requests/CreateFamilyRequest",
+        });
+    };
+
+    function sendApproveRequest(node) {
+        var nodeValue = node.value
+        console.log(nodeValue);
+        $.ajax({
+            type: "POST",
+            data: {
+                requestGuid: nodeValue,
+                isApproved: 1
+            },
+            url: "/Requests/ProcessFamilyRequest",
+        });
+    };
+
+    function sendRejectRequest(node) {
+        var nodeValue = node.value
+        console.log(nodeValue);
+        $.ajax({
+            type: "POST",
+            data: {
+                requestGuid: nodeValue,
+                isApproved: 0
+            },
+            url: "/Requests/ProcessFamilyRequest",
+        });
+    };
+
+</script>
+<div class="col-md-6 col-md-offset-2">
+    <h3>Families you can request</h3>
+    @foreach (Family family in Model.Families)
+    {
+        <table style="margin-bottom:5px">
+            <tr>
+                <td>
+                    @if (family.MainImage != null)
+                    {
+                        <div id="img_container">
+                            <img onmouseout="show(this);"
+                                 src="data:image;base64,@System.Convert.ToBase64String(family.MainImage.ImageData)" width="80" height="80" />
+                            <button id="button"
+                                    value="@family.Guid"
+                                    onclick="sendSubmitToJoin(this)"
+                                    onmouseover="show(this)"
+                                    onmouseout="hide(this)">
+                                Join Family
+                            </button>
+                        </div>
+                    }
+                </td>
+                <td>
+                    <ul>
+                        <li>Family Name: @family.FamilyName</li>
+                        <li>Family Administrator: @family.FamilyAdministrator</li>
+                        <li>Family Token: @family.Guid</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    }
 </div>

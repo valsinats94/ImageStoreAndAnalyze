@@ -39,5 +39,6 @@ namespace ImageStoreAndAnalyze.Models
 
         public Guid Guid { get; set; }
         
+        public ICollection<FamilyRequest> FamilyRequests { get; set; }
     }
 }

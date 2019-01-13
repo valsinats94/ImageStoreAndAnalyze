@@ -17,6 +17,8 @@ namespace ImageStoreAndAnalyze.Data
         public DbSet<ImageModel> Images { get; set; }
         public DbSet<ImageTag> ImageTags { get; set; }
 
+        public DbSet<FamilyRequest> FamilyRequests { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -52,6 +54,17 @@ namespace ImageStoreAndAnalyze.Data
             builder.Entity<ImageModel>()
                 .HasMany(im => im.ImageTags)
                 .WithOne(it => it.Image);
+
+            builder.Entity<FamilyRequest>()
+                .HasOne(fr => fr.RequestByUser)
+                .WithMany(u => u.FamilyRequests);
+
+            builder.Entity<FamilyRequest>()
+                .HasOne(fr => fr.ProcessedByUser);
+
+            builder.Entity<FamilyRequest>()
+                .HasOne(fr => fr.RequestedFamily)
+                .WithMany(f => f.FamilyRequests);
         }
 
         private void CreateUserRoles()

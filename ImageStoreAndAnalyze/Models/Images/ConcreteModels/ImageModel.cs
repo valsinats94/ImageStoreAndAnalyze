@@ -1,4 +1,5 @@
 ﻿using ImageStoreAndAnalyze.Models;
+using ImageStoreAndAnalyze.Models.Images.ConcreteModels.AnalyzeModels;
 using SortMImage.Models.AnalyzeModels;
 using System;
 using System.Collections.Generic;

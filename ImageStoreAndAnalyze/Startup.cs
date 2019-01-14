@@ -14,6 +14,7 @@ using ImageStoreAndAnalyze.Services;
 using Microsoft.Extensions.Logging;
 using ImageStoreAndAnalyze.Interfaces.Services;
 using ImageStoreAndAnalyze.Data.DatabaseServices;
+using ImageStoreAndAnalyze.Services.ImageAnalyzeServices;
 
 namespace ImageStoreAndAnalyze
 {
@@ -54,6 +55,7 @@ namespace ImageStoreAndAnalyze
             services.AddTransient<IImageDatabaseService, ImageDatabaseService>();
             services.AddTransient<IFamilyDatabaseService, FamilyDatabaseService>();
             services.AddTransient<IFamilyRequestsDatabaseService, FamilyRequestsDatabaseService>();
+            services.AddTransient<IAnalyzeMyImgService, AnalyzeMyImgService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

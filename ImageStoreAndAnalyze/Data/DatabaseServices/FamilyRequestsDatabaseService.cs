@@ -71,10 +71,5 @@ namespace ImageStoreAndAnalyze.Data.DatabaseServices
             return context.FamilyRequests.Where(fr => fr.RequestedFamily.Guid == family.Guid
                                                 && fr.IsProcessed == false).ToList();
         }
-
-        public int Save()
-        {
-            return context.SaveChanges();
-        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ImageProcess.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace SortMImage.Models.AnalyzeModels
     {
         public string Id { get; set; }
 
+        [JsonProperty("filename")]
         public string ImageName { get; set; }
 
         public ImageModel OriginalImage { get; set; }

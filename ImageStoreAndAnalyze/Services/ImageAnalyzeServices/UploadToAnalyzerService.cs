@@ -1,5 +1,6 @@
 ﻿using ImageProcess.Models;
 using ImageStoreAndAnalyze.Exceptions;
+using ImageStoreAndAnalyze.Interfaces.Services;
 using Newtonsoft.Json.Linq;
 using SortMImage.Models.AnalyzeModels;
 using System;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace ImageStoreAndAnalyze.Services.ImageAnalyzeServices
 {
-    public class UploadToAnalyzerService
+    public class UploadToAnalyzerService : IUploadToAnalyzerService
     {
         #region Declarations
 
@@ -23,7 +24,7 @@ namespace ImageStoreAndAnalyze.Services.ImageAnalyzeServices
 
         #region Properties
 
-        public ObservableCollection<StatusResult> UploadResult
+        public ICollection<StatusResult> UploadResult
         {
             get
             {
@@ -37,7 +38,7 @@ namespace ImageStoreAndAnalyze.Services.ImageAnalyzeServices
                 if (value == uploadResult)
                     return;
 
-                uploadResult = value;
+                uploadResult = value as ObservableCollection<StatusResult>;
             }
         }
 
@@ -80,8 +81,7 @@ namespace ImageStoreAndAnalyze.Services.ImageAnalyzeServices
                 UploadResult.Add(statusResult);
 
                 Console.WriteLine(result);
-                Console.ReadLine();
-
+                
                 return statusResult;
             }
         }

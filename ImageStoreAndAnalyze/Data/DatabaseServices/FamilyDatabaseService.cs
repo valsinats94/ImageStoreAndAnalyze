@@ -77,6 +77,14 @@ namespace ImageStoreAndAnalyze.Data.DatabaseServices
             return context.Families.Where(f => f.FamilyUsers.Any(fu => fu.ApplicationUserId == user.Id)).Cast<IFamily>().ToList();
         }
 
+        public ICollection<IFamily> GetUserFamiliesMemberOfWithAdminAndImages(IUser user)
+        {
+            return context.Families.Where(f => f.FamilyUsers.Any(fu => fu.ApplicationUserId == user.Id))
+                .Include(f => f.FamilyAdministrator)
+                .Include(f => f.Images)
+                .Cast<IFamily>().ToList();
+        }
+
         public ICollection<IFamily> GetUserAdminFamiliesWithMainImage(IUser userAdmin)
         {
             return context.Families.Where(f => f.FamilyAdministrator.Id == userAdmin.Id)
@@ -98,7 +106,7 @@ namespace ImageStoreAndAnalyze.Data.DatabaseServices
         }
 
         public IFamily GetFamilyByGuid(Guid guid)
-        {
+        {            
             return context.Families.FirstOrDefault(f => f.Guid == guid);
         }
 

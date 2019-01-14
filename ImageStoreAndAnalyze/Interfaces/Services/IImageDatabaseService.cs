@@ -26,5 +26,7 @@ namespace ImageStoreAndAnalyze.Interfaces.Services
         void UpdateImageTagsByImageName(Guid imageGuid, List<ImageTag> imageTags);
 
         void UpdateImageTagsByImageData(byte[] imageData, List<ImageTag> imageTags);
+
+        int Save();
     }
 }

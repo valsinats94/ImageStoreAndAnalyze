@@ -22,6 +22,8 @@ namespace ImageStoreAndAnalyze.Interfaces.Services
 
         ICollection<IFamily> GetUserFamiliesMemberOf(IUser user);
 
+        ICollection<IFamily> GetUserFamiliesMemberOfWithAdminAndImages(IUser user);
+
         ICollection<IFamily> GetUserAdminFamiliesWithMainImage(IUser userAdmin);
 
         ICollection<IFamily> GetUserAdminFamiliesWithMainImageAndRequests(IUser userAdmin);

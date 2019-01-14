@@ -33,7 +33,7 @@ namespace ImageStoreAndAnalyze.Utilities
                     fieldDisplayName = $"{displayAttribute.Name} ";
                 }
             }
-            
+
             // Check the file length and don't bother attempting to read it if the file contains no content.
             if (formFile.Length == 0)
             {
@@ -76,6 +76,33 @@ namespace ImageStoreAndAnalyze.Utilities
             }
 
             return null;
+        }
+
+        public static string SaveFileToTemp(ImageModel imageModel)
+        {
+            string myTempFile = Path.Combine(Path.GetTempPath(), imageModel.FileName);
+            try
+            { 
+                File.WriteAllBytes(@myTempFile, imageModel.ImageData);
+                imageModel.ImagePath = myTempFile;
+            }
+            catch
+            {
+
+            }
+
+            return myTempFile;
+        }
+
+        public static bool DeleteTempFile(string myTempFile)
+        {
+            if (File.Exists(@myTempFile))
+            {
+                File.Delete(@myTempFile);
+                return true;
+            }
+
+            return false;
         }
     }
 }

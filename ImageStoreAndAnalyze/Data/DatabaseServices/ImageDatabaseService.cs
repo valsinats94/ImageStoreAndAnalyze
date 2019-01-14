@@ -1,6 +1,7 @@
 ﻿using ImageProcess.Models;
 using ImageStoreAndAnalyze.Interfaces;
 using ImageStoreAndAnalyze.Interfaces.Services;
+using Microsoft.EntityFrameworkCore;
 using SortMImage.Models.AnalyzeModels;
 using System;
 using System.Collections.Generic;
@@ -49,15 +50,17 @@ namespace ImageStoreAndAnalyze.Data.DatabaseServices
 
         public ImageModel GetImageByImageData(byte[] imageData)
         {
-            List<ImageModel> dbImages = GetAllImages();
-            foreach (ImageModel img in dbImages)
-            {
-                if (img.ImageData.Count() == imageData.Count() && img.ImageData.SequenceEqual(imageData))
-                    return img;
+            return context.Images
+                .Include(img => img.ImageTags)
+                .FirstOrDefault(img => img.ImageData.Count() == imageData.Count() && img.ImageData.SequenceEqual(imageData));
+            //foreach (ImageModel img in dbImages)
+            //{
+            //    if (img.ImageData.Count() == imageData.Count() && img.ImageData.SequenceEqual(imageData))
+            //        return img;
 
-            }
+            //}
 
-            return null;
+            //return null;
         }
 
         public List<ImageModel> GetAllImages()

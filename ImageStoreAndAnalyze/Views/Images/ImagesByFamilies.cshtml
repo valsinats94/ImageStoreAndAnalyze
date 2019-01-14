@@ -1,0 +1,57 @@
+﻿@model ImagesByFamiliesViewModel
+@inject UserManager<ApplicationUser> userManager
+
+@{
+    ViewData["Title"] = "Images By Families";
+}
+
+<h2>@ViewData["Title"]</h2>
+@Html.Partial("_StatusMessage", Model.StatusMessage)
+
+<button class="btn-success" href="#uploadImage" data-toggle="collapse">Upload Images</button>
+
+<div id="uploadImage" class="collapse">
+    @Html.Partial("_ImagesUpload", Model.ImagesViewModel)
+</div>
+
+<script>
+    function sendAnalyzeImage(node) {
+        var nodeValue = node.value
+        console.log(nodeValue);
+        $.ajax({
+            type: "POST",
+            data: { imageGuid: nodeValue },
+            url: "/Images/AnalyzeImage",
+        });
+    };
+</script>
+
+@foreach (var family in Model.FamiliesMemberOf)
+{
+    <div class="row">
+        <div class="panel">
+            <h3 class="h3">Family Name: @family.FamilyName</h3>
+            <h3 class="h3">Family Token: @family.Guid</h3>
+            <h3 class="h3">Family Admin: @family.FamilyAdministrator</h3>
+        </div>
+
+        @foreach (var image in family.Images)
+        {
+        <div class="col-md-6">
+            <div id="img_container">
+                <img class="img-responsiveWithMargin"
+                     onmouseout="show(this);"
+                     src="data:image;base64,@System.Convert.ToBase64String(image.ImageData)" />
+                <button id="button"
+                        class="semi-transparent-button"
+                        value="@image.Guid"
+                        onclick="sendAnalyzeImage(this)"
+                        onmouseover="show(this)"
+                        onmouseout="hide(this)">
+                    Analyze Image
+                </button>
+            </div>
+        </div>
+        }
+    </div>
+}

@@ -5,13 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ImageStoreAndAnalyze.Data.DatabaseServices
 {
     public class FamilyDatabaseService : BaseDatabaseService, IFamilyDatabaseService
     {
-        public FamilyDatabaseService(ApplicationDbContext context, IServiceProvider serviceProvider) 
+        public FamilyDatabaseService(ApplicationDbContext context, IServiceProvider serviceProvider)
             : base(context, serviceProvider)
         {
         }
@@ -106,7 +105,7 @@ namespace ImageStoreAndAnalyze.Data.DatabaseServices
         }
 
         public IFamily GetFamilyByGuid(Guid guid)
-        {            
+        {
             return context.Families.FirstOrDefault(f => f.Guid == guid);
         }
 

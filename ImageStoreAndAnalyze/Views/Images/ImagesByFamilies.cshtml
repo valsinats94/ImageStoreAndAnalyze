@@ -24,6 +24,15 @@
             url: "/Images/AnalyzeImage",
         });
     };
+
+    function hide(node) {
+        node.style.opacity = 0;
+    };
+
+    function show(node) {
+        node.style.opacity = 100;
+    };
+
 </script>
 
 @foreach (var family in Model.FamiliesMemberOf)

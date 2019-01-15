@@ -1,0 +1,34 @@
+﻿@model AnalyzedImagesViewModel
+@inject UserManager<ApplicationUser> userManager
+
+@{
+    ViewData["Title"] = "Analyzed Images";
+}
+
+<h2>@ViewData["Title"]</h2>
+<section>
+    @Html.Partial("_StatusMessage", Model.StatusMessage)
+
+    @foreach (var image in Model.AnalyzedImages)
+    {
+        <div class="col-md-3">
+            <table>
+                <tr>
+                    <td>
+                        <img class="img-responsiveWithMargin"
+                             src="data:image;base64,@System.Convert.ToBase64String(image.ImageData)" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @foreach (var imageTag in image.ImageTags)
+                        {
+                            <label>@imageTag.Tag</label>
+                            <label>Confidence: @imageTag.Confidence</label>
+                        }
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+</section>

@@ -150,7 +150,7 @@ namespace ImageStoreAndAnalyze.Controllers
                 RedirectToAction(nameof(ImagesByFamilies));
             }
 
-            ImageModel imageModel = imageDatabaseService.GetFamilyByGuid(imageGuidParsed) as ImageModel;
+            ImageModel imageModel = imageDatabaseService.GetImageByGuid(imageGuidParsed) as ImageModel;
 
             try
             {
@@ -165,6 +165,25 @@ namespace ImageStoreAndAnalyze.Controllers
             }
 
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AnalyzedImages()
+        {
+            IImageDatabaseService imageDatabaseService = serviceProvider.GetService(typeof(IImageDatabaseService)) as IImageDatabaseService;
+
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+            }
+
+            var model = new AnalyzedImagesViewModel()
+            {
+                AnalyzedImages = imageDatabaseService.GetProcessedImagesByUserUploaded(user)
+            };
+
+            return View(model);
         }
 
         #region Helpers

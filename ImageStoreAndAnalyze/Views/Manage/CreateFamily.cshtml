@@ -17,11 +17,6 @@
                 <span asp-validation-for="FamilyName" class="text-danger"></span>
             </div>
 
-            @*<div class="form-group">
-                <label asp-for="Image"></label>
-                <input asp-for="Image" type="file" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
-            </div>*@
             @if (Model.ImageModel != null)
             {
                 <img src="data:image;base64,@System.Convert.ToBase64String(Model.ImageModel.ImageData)" width="80" height="80" />
@@ -38,7 +33,7 @@
                     @Html.TextBoxFor(m => m.Image, new { type = "file" })
                     <br />
                     @Html.ValidationMessageFor(m => m.Image, "", new { @class = "error" })
-                    <input type="submit" value="Upload" />
+                    <input type="submit" value="Upload" class="btn-primary"/>
                     <br />
                     <span style="color:green">@Html.Raw(ViewBag.Message)</span>
                 }

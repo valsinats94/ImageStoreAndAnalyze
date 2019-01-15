@@ -1,4 +1,5 @@
 ﻿using ImageProcess.Models;
+using ImageStoreAndAnalyze.Models;
 using SortMImage.Models.AnalyzeModels;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace ImageStoreAndAnalyze.Interfaces.Services
 
         void DeleteImageFromDatabase(ImageModel imageModel);
 
-        IImage GetFamilyByGuid(Guid guid);
+        IImage GetImageByGuid(Guid guid);
+
+        ICollection<ImageModel> GetProcessedImagesByUserUploaded(IUser user);
 
         ImageModel GetImageByName(string imageName);
 

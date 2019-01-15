@@ -674,6 +674,12 @@ namespace ImageStoreAndAnalyze.Controllers
 
             Family family = familyDatabaseService.GetFamilyByGuid(guid) as Family;
 
+            if (family.FamilyUsers.Count <= 1)
+            {
+                StatusMessage = $"You cant leave family {family.FamilyName}.";
+                return View(nameof(FamiliesManagement), model);
+            }
+
             try
             {
                 familyDatabaseService.RemoveFamilyMemeber(family, user);
@@ -705,7 +711,7 @@ namespace ImageStoreAndAnalyze.Controllers
             var model = new CreateFamilyViewModel
             {
                 StatusMessage = StatusMessage,
-                ImageModel = imageDatabaseService.GetFamilyByGuid(imageGuid) as ImageModel
+                ImageModel = imageDatabaseService.GetImageByGuid(imageGuid) as ImageModel
             };
             return View(model);
         }
@@ -740,7 +746,7 @@ namespace ImageStoreAndAnalyze.Controllers
             IImageDatabaseService imageDatabaseService = serviceProvider.GetService(typeof(IImageDatabaseService)) as IImageDatabaseService;
             Guid imageGuid;
             Guid.TryParse(HttpContext.Session.GetString(user.SecurityStamp), out imageGuid);
-            ImageModel familyMainImage = imageDatabaseService.GetFamilyByGuid(imageGuid) as ImageModel;
+            ImageModel familyMainImage = imageDatabaseService.GetImageByGuid(imageGuid) as ImageModel;
 
             Family family = new Family
             {

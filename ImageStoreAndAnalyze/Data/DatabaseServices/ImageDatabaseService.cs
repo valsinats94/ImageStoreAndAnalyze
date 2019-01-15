@@ -1,6 +1,7 @@
 ﻿using ImageProcess.Models;
 using ImageStoreAndAnalyze.Interfaces;
 using ImageStoreAndAnalyze.Interfaces.Services;
+using ImageStoreAndAnalyze.Models;
 using Microsoft.EntityFrameworkCore;
 using SortMImage.Models.AnalyzeModels;
 using System;
@@ -35,12 +36,21 @@ namespace ImageStoreAndAnalyze.Data.DatabaseServices
             }
 
             context.Images.Remove(imageModel);
-            context.SaveChangesAsync();
+            context.SaveChanges();
         }
 
-        public IImage GetFamilyByGuid(Guid guid)
+        public IImage GetImageByGuid(Guid guid)
         {
             return context.Images.FirstOrDefault(f => f.Guid == guid);
+        }
+
+        public ICollection<ImageModel> GetProcessedImagesByUserUploaded(IUser user)
+        {
+            return context.Images
+                .Include(i => i.ImageTags)
+                .Include(i => i.Family)
+                .Include(i => i.User)
+                .Where(i => i.IsProcessed && i.User.SecurityStamp == user.SecurityStamp).ToList();
         }
 
         public ImageModel GetImageByName(string imageName)
